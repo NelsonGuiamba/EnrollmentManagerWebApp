@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  userId            String
+  id                String  @id @default(cuid())
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model User {
+  id              String        @id @default(cuid())
+  name            String?
+  email           String        @unique
+  emailVerified   DateTime?
+  passwordHash    String?
+  image           String?
+  profileComplete Boolean       @default(false)
+  role            Role          @default(MEMBER)
+  accounts        Account[]
+  students        Student[]
+  enrollments     Enrollment[]
+  appeals         Appeal[]
+  SchoolClass     SchoolClass[]
+}
+
+model Student {
+  id            String       @id @default(cuid())
+  name          String
+  sex           Sex
+  dateOfBirth   DateTime
+  enrollment    Enrollment?
+  parentId      String
+  parent        User         @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  SchoolClass   SchoolClass? @relation(fields: [schoolClassId], references: [id])
+  schoolClassId String?
+}
+
+model Enrollment {
+  id             String           @id @default(cuid())
+  class          Int
+  shift          Shift
+  certificate    String
+  nationalIdCard String?
+  studentId      String           @unique
+  student        Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  status         EnrollmentStatus @default(PENDING)
+  reason         String?
+  appeal         Appeal?
+  processedById  String?
+  processedBy    User?            @relation(fields: [processedById], references: [id], onDelete: SetNull)
+}
+
+model Appeal {
+  id            String           @id @default(cuid())
+  enrollmentId  String           @unique
+  enrollment    Enrollment       @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  text          String
+  processedById String?
+  processedBy   User?            @relation(fields: [processedById], references: [id], onDelete: SetNull)
+  status        EnrollmentStatus @default(PENDING)
+}
+
+// Just for not using class 
+model SchoolClass {
+  id        String    @id @default(cuid())
+  teacherId String?
+  teacher   User?     @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  class     Int
+  students  Student[]
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+  EMPLOYEE
+  PROFESSOR
+}
+
+enum Sex {
+  MASCULINE
+  FEMININE
+}
+
+enum Shift {
+  DAYTIME
+  NIGHTTIME
+}
+
+enum EnrollmentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
