@@ -11,6 +11,7 @@ export default {
   providers: [
     Credentials({
       name: "credentials",
+
       async authorize(cred) {
         const validated = loginSchema.safeParse(cred);
 
@@ -19,11 +20,13 @@ export default {
 
           const user = await getUserByEmail(email);
 
-          if (!user || !(await compare(password, user?.passwordHash)))
+          if (!user || !(await compare(password, user?.passwordHash as string)))
             return null;
 
           return user;
         }
+
+        return null
       },
     }),
   ],
