@@ -1,7 +1,7 @@
 const colors = {
-  "light": {
-    "colors": {
-      "default": {
+  light: {
+    colors: {
+      default: {
         "50": "#f0eff8",
         "100": "#dcd8ee",
         "200": "#c7c1e3",
@@ -12,10 +12,10 @@ const colors = {
         "700": "#595180",
         "800": "#413b5e",
         "900": "#29253b",
-        "foreground": "#000",
-        "DEFAULT": "#897cc5"
+        foreground: "#000",
+        DEFAULT: "#897cc5",
       },
-      "primary": {
+      primary: {
         "50": "#eee4f8",
         "100": "#d7bfef",
         "200": "#bf99e5",
@@ -26,10 +26,10 @@ const colors = {
         "700": "#4e1a82",
         "800": "#39135f",
         "900": "#240c3c",
-        "foreground": "#fff",
-        "DEFAULT": "#7828c8"
+        foreground: "#fff",
+        DEFAULT: "#7828c8",
       },
-      "secondary": {
+      secondary: {
         "50": "#e9edff",
         "100": "#cbd4ff",
         "200": "#adbcff",
@@ -40,10 +40,10 @@ const colors = {
         "700": "#3549a6",
         "800": "#273679",
         "900": "#19224d",
-        "foreground": "#000",
-        "DEFAULT": "#5271ff"
+        foreground: "#000",
+        DEFAULT: "#5271ff",
       },
-      "success": {
+      success: {
         "50": "#e3f8ef",
         "100": "#bbedd8",
         "200": "#93e3c1",
@@ -54,10 +54,10 @@ const colors = {
         "700": "#127f51",
         "800": "#0d5d3b",
         "900": "#083b26",
-        "foreground": "#000",
-        "DEFAULT": "#1bc47d"
+        foreground: "#000",
+        DEFAULT: "#1bc47d",
       },
-      "warning": {
+      warning: {
         "50": "#fff5df",
         "100": "#ffe8b3",
         "200": "#ffda86",
@@ -68,10 +68,10 @@ const colors = {
         "700": "#a67300",
         "800": "#795400",
         "900": "#4d3500",
-        "foreground": "#000",
-        "DEFAULT": "#ffb100"
+        foreground: "#000",
+        DEFAULT: "#ffb100",
       },
-      "danger": {
+      danger: {
         "50": "#ffe9e9",
         "100": "#ffcaca",
         "200": "#ffabab",
@@ -82,34 +82,34 @@ const colors = {
         "700": "#a63333",
         "800": "#792626",
         "900": "#4d1818",
-        "foreground": "#000",
-        "DEFAULT": "#ff4f4f"
+        foreground: "#000",
+        DEFAULT: "#ff4f4f",
       },
-      "background": "#f9f7fd",
-      "foreground": "#4a3d77",
-      "content1": {
-        "DEFAULT": "#f2e8ff",
-        "foreground": "#000"
+      background: "#f9f7fd",
+      foreground: "#4a3d77",
+      content1: {
+        DEFAULT: "#f2e8ff",
+        foreground: "#000",
       },
-      "content2": {
-        "DEFAULT": "#e8daff",
-        "foreground": "#000"
+      content2: {
+        DEFAULT: "#e8daff",
+        foreground: "#000",
       },
-      "content3": {
-        "DEFAULT": "#dccbff",
-        "foreground": "#000"
+      content3: {
+        DEFAULT: "#dccbff",
+        foreground: "#000",
       },
-      "content4": {
-        "DEFAULT": "#cfbcff",
-        "foreground": "#000"
+      content4: {
+        DEFAULT: "#cfbcff",
+        foreground: "#000",
       },
-      "focus": "#7828c8",
-      "overlay": "#000000"
-    }
+      focus: "#7828c8",
+      overlay: "#000000",
+    },
   },
-  "dark": {
-    "colors": {
-      "default": {
+  dark: {
+    colors: {
+      default: {
         "50": "#130e1d",
         "100": "#261c3a",
         "200": "#3a2958",
@@ -120,10 +120,10 @@ const colors = {
         "700": "#bfb5d3",
         "800": "#dfdae9",
         "900": "#ffffff",
-        "foreground": "#fff",
-        "DEFAULT": "#604592"
+        foreground: "#fff",
+        DEFAULT: "#604592",
       },
-      "primary": {
+      primary: {
         "50": "#2c193f",
         "100": "#462764",
         "200": "#603689",
@@ -134,10 +134,10 @@ const colors = {
         "700": "#ccadea",
         "800": "#dfcbf2",
         "900": "#f2eafa",
-        "foreground": "#fff",
-        "DEFAULT": "#9353d3"
+        foreground: "#fff",
+        DEFAULT: "#9353d3",
       },
-      "secondary": {
+      secondary: {
         "50": "#1e254d",
         "100": "#2f3a79",
         "200": "#404fa6",
@@ -148,10 +148,10 @@ const colors = {
         "700": "#b5c0ff",
         "800": "#d0d7ff",
         "900": "#eceeff",
-        "foreground": "#000",
-        "DEFAULT": "#637aff"
+        foreground: "#000",
+        DEFAULT: "#637aff",
       },
-      "success": {
+      success: {
         "50": "#0b412a",
         "100": "#116743",
         "200": "#178d5c",
@@ -162,10 +162,10 @@ const colors = {
         "700": "#97edc9",
         "800": "#bdf4dd",
         "900": "#e4faf1",
-        "foreground": "#000",
-        "DEFAULT": "#23d98d"
+        foreground: "#000",
+        DEFAULT: "#23d98d",
       },
-      "warning": {
+      warning: {
         "50": "#4d3d11",
         "100": "#79601c",
         "200": "#a68326",
@@ -176,10 +176,10 @@ const colors = {
         "700": "#ffe6a1",
         "800": "#ffefc4",
         "900": "#fff8e6",
-        "foreground": "#000",
-        "DEFAULT": "#ffca3a"
+        foreground: "#000",
+        DEFAULT: "#ffca3a",
       },
-      "danger": {
+      danger: {
         "50": "#4d2020",
         "100": "#793333",
         "200": "#a64646",
@@ -190,30 +190,29 @@ const colors = {
         "700": "#ffb9b9",
         "800": "#ffd3d3",
         "900": "#ffeded",
-        "foreground": "#000",
-        "DEFAULT": "#ff6b6b"
+        foreground: "#000",
+        DEFAULT: "#ff6b6b",
       },
-      "background": "#1b1526",
-      "foreground": "#d0aaff",
-      "content1": {
-        "DEFAULT": "#392a4a",
-        "foreground": "#fff"
+      background: "#1b1526",
+      foreground: "#d0aaff",
+      content1: {
+        DEFAULT: "#392a4a",
+        foreground: "#fff",
       },
-      "content2": {
-        "DEFAULT": "#4c3560",
-        "foreground": "#fff"
+      content2: {
+        DEFAULT: "#4c3560",
+        foreground: "#fff",
       },
-      "content3": {
-        "DEFAULT": "#5e4180",
-        "foreground": "#fff"
+      content3: {
+        DEFAULT: "#5e4180",
+        foreground: "#fff",
       },
-      "content4": {
-        "DEFAULT": "#704ea0",
-        "foreground": "#fff"
+      content4: {
+        DEFAULT: "#704ea0",
+        foreground: "#fff",
       },
-      "focus": "#9353d3",
-      "overlay": "#ffffff"
-    }
-  }
-}
-
+      focus: "#9353d3",
+      overlay: "#ffffff",
+    },
+  },
+};

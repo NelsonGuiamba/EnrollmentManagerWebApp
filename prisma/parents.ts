@@ -51,4 +51,3 @@ export const parentData = [
     image: "/images/female.jpg",
   },
 ];
-

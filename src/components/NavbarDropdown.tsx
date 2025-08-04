@@ -1,21 +1,22 @@
-'use client'
+"use client";
 import {
   DropdownItem,
   DropdownTrigger,
   Dropdown,
-  DropdownMenu
+  DropdownMenu,
 } from "@heroui/dropdown";
 import { Avatar } from "@heroui/avatar";
+import React from "react";
+
 import { signOutUser } from "@/actions/authActions";
-import React from 'react'
 
 type Props = {
-  name: string
-}
+  name: string;
+};
 
 export default function navbarDropdown({ name }: Props) {
   return (
-    <Dropdown placement="bottom-end" >
+    <Dropdown placement="bottom-end">
       <DropdownTrigger>
         <Avatar
           isBordered
@@ -36,9 +37,6 @@ export default function navbarDropdown({ name }: Props) {
           Log Out
         </DropdownItem>
       </DropdownMenu>
-    </Dropdown >
-
-  )
+    </Dropdown>
+  );
 }
-
-

@@ -1,27 +1,29 @@
 import { hash } from "bcryptjs";
+
 import { PrismaClient, Role, Sex, Shift } from "../generated/prisma";
+
 import { teacherData } from "./teachers";
 import { employeeData } from "./employees";
 import { parentData } from "./parents";
 import { studentsData } from "./students";
 
-const prisma = new PrismaClient({ log: ['query'] })
-const idBoy = process.env.ID_BOY_PHOTO
-const idGirl = process.env.ID_GIRL_PHOTO
-const certificate = process.env.CERTIFICATE
-type empType = {
-  name: string,
-  email: string,
-  image: string,
+const prisma = new PrismaClient({ log: ["query"] });
+const idBoy = process.env.ID_BOY_PHOTO;
+const idGirl = process.env.ID_GIRL_PHOTO;
+const certificate = process.env.CERTIFICATE;
 
-}
+type empType = {
+  name: string;
+  email: string;
+  image: string;
+};
 async function main() {
-  const teacherHash = await hash('teacherpass1', 10)
+  const teacherHash = await hash("teacherpass1", 10);
 
   teacherData.map(async ({ name, email, image }) => {
     await prisma.user.upsert({
       where: {
-        email
+        email,
       },
       update: {},
       create: {
@@ -31,17 +33,17 @@ async function main() {
         passwordHash: teacherHash,
         emailVerified: new Date(),
         profileComplete: true,
-        role: Role.PROFESSOR
-      }
-    })
-  })
+        role: Role.PROFESSOR,
+      },
+    });
+  });
 
-  const employeeHash = await hash('employeepass1', 10)
+  const employeeHash = await hash("employeepass1", 10);
 
   employeeData.map(async ({ name, email, image }) => {
     await prisma.user.upsert({
       where: {
-        email
+        email,
       },
       update: {},
       create: {
@@ -51,36 +53,37 @@ async function main() {
         passwordHash: employeeHash,
         emailVerified: new Date(),
         profileComplete: true,
-        role: Role.EMPLOYEE
-      }
-    })
-  })
-  const adminHash = await hash('adminpass1', 10)
+        role: Role.EMPLOYEE,
+      },
+    });
+  });
+  const adminHash = await hash("adminpass1", 10);
 
   await prisma.user.upsert({
     where: {
-      email: 'admin@esjm.com'
+      email: "admin@esjm.com",
     },
     update: {},
     create: {
-      email: 'admin@esjm.com',
-      name: 'Admin',
-      image: '/images/male.jpg',
+      email: "admin@esjm.com",
+      name: "Admin",
+      image: "/images/male.jpg",
       passwordHash: adminHash,
       emailVerified: new Date(),
       profileComplete: true,
-      role: Role.ADMIN
-    }
-  })
-  const parentHash = await hash('parentpass1', 10)
-  let remainingStudents = studentsData.length
-  let currStudent = 0
+      role: Role.ADMIN,
+    },
+  });
+  const parentHash = await hash("parentpass1", 10);
+  let remainingStudents = studentsData.length;
+  let currStudent = 0;
+
   for (let index = 0; index < parentData.length; index++) {
     const element = parentData[index];
 
     const parentId = await prisma.user.upsert({
       where: {
-        email: element.email
+        email: element.email,
       },
       update: {},
       create: {
@@ -90,21 +93,20 @@ async function main() {
         passwordHash: parentHash,
         emailVerified: new Date(),
         profileComplete: true,
-        role: Role.MEMBER
+        role: Role.MEMBER,
       },
       select: {
-        id: true
-      }
-    })
+        id: true,
+      },
+    });
 
     if (remainingStudents > 0) {
-      let noOfStudents
-      if (index === parentData.length - 1)
-        noOfStudents = remainingStudents
-      else
-        noOfStudents = getRandomInt(1, Math.min(remainingStudents, 4))
+      let noOfStudents;
+
+      if (index === parentData.length - 1) noOfStudents = remainingStudents;
+      else noOfStudents = getRandomInt(1, Math.min(remainingStudents, 4));
       for (let idx = 0; idx < noOfStudents; idx++) {
-        const student = studentsData[currStudent]
+        const student = studentsData[currStudent];
         const studentId = await prisma.student.create({
           data: {
             parentId: parentId.id,
@@ -117,79 +119,76 @@ async function main() {
                 class: student.enrollment.class,
                 shift: student.enrollment.shift as Shift,
                 nationalIdCard: student.enrollment.nationalIdCard,
-              }
-            }
+              },
+            },
           },
           select: {
             id: true,
             enrollment: {
               select: {
-                id: true
-              }
-            }
-          }
-        })
+                id: true,
+              },
+            },
+          },
+        });
 
-        const randomEmployee = randomElement(employeeData)
+        const randomEmployee = randomElement(employeeData);
         const employeeId = await prisma.user.findFirst({
           where: {
-            email: randomEmployee?.email as string
+            email: randomEmployee?.email as string,
           },
           select: {
-            id: true
-          }
-        })
+            id: true,
+          },
+        });
 
-        const shouldBeAcepted = Math.random() < 0.7
-        const atFirstTime = Math.random() < 0.5
+        const shouldBeAcepted = Math.random() < 0.7;
+        const atFirstTime = Math.random() < 0.5;
+
         await prisma.enrollment.update({
           where: { id: studentId.enrollment?.id },
           data: {
             processedById: employeeId?.id,
-            status: atFirstTime ? 'APPROVED' : 'REJECTED'
-          }
-        })
+            status: atFirstTime ? "APPROVED" : "REJECTED",
+          },
+        });
         if (!atFirstTime) {
           const randomEmployee2 = randomElement(
-            employeeData.filter(t => t.email !== randomEmployee.email)) as empType
+            employeeData.filter((t) => t.email !== randomEmployee.email),
+          ) as empType;
           const employeeId = await prisma.user.findFirst({
             where: {
-              email: randomEmployee2?.email as string
+              email: randomEmployee2?.email as string,
             },
             select: {
-              id: true
-            }
-          })
+              id: true,
+            },
+          });
+
           await prisma.enrollment.update({
             where: { id: studentId.enrollment?.id },
             data: {
               appeal: {
                 create: {
-                  text: 'Random appeal text',
+                  text: "Random appeal text",
                   processedById: employeeId?.id,
-                  status: shouldBeAcepted ? 'APPROVED' : 'REJECTED'
-                }
-              }
-            }
-          })
-
+                  status: shouldBeAcepted ? "APPROVED" : "REJECTED",
+                },
+              },
+            },
+          });
         }
-        if (shouldBeAcepted)
-          addToSchoolClass(studentId.id)
+        if (shouldBeAcepted) addToSchoolClass(studentId.id);
 
-        currStudent++
-
+        currStudent++;
       }
-      remainingStudents -= noOfStudents
-
+      remainingStudents -= noOfStudents;
     }
-
-
   }
   parentData.map(async ({ name, email, image }) => {
     await prisma.user.upsert({
       where: {
-        email
+        email,
       },
       update: {},
       create: {
@@ -199,13 +198,10 @@ async function main() {
         passwordHash: parentHash,
         emailVerified: new Date(),
         profileComplete: true,
-        role: Role.EMPLOYEE
-      }
-    })
-  })
-
-
-
+        role: Role.EMPLOYEE,
+      },
+    });
+  });
 }
 function randomElement<T>(arr: T[]) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -218,46 +214,51 @@ async function addToSchoolClass(studentId: string) {
   try {
     const studentClass = await prisma.enrollment.findUnique({
       where: {
-        studentId: studentId
+        studentId: studentId,
       },
       select: {
-        class: true
-      }
-    })
+        class: true,
+      },
+    });
+
     if (!studentClass) {
-      console.log('Trying to add student without enrollment error')
-      return
+      console.log("Trying to add student without enrollment error");
+
+      return;
     }
 
     const schoolClass = await prisma.schoolClass.findFirst({
       where: {
-        class: studentClass.class
+        class: studentClass.class,
       },
       select: {
         id: true,
         _count: {
           select: {
-            students: true
-          }
-        }
-      }
-    })
+            students: true,
+          },
+        },
+      },
+    });
     const createNew = async () => {
       const professor = await prisma.user.findFirst({
-        where: { role: 'PROFESSOR' },
+        where: { role: "PROFESSOR" },
         select: {
           id: true,
           name: true,
           _count: { select: { SchoolClass: true } },
         },
         orderBy: {
-          SchoolClass: { _count: 'asc' },
+          SchoolClass: { _count: "asc" },
         },
       });
 
       if (!professor) {
-        console.log('PROFESSORs are not available please seed the professor data')
-        return
+        console.log(
+          "PROFESSORs are not available please seed the professor data",
+        );
+
+        return;
       }
 
       await prisma.schoolClass.create({
@@ -265,55 +266,49 @@ async function addToSchoolClass(studentId: string) {
           class: studentClass.class,
           students: {
             connect: {
-              id: studentId
-            }
+              id: studentId,
+            },
           },
           teacher: {
             connect: {
-              id: professor.id
-            }
-          }
-        }
-      })
-    }
+              id: professor.id,
+            },
+          },
+        },
+      });
+    };
 
     if (!schoolClass) {
-      await createNew()
+      await createNew();
     } else {
       if (schoolClass._count.students <= 10) {
         await prisma.schoolClass.update({
           where: {
-            id: schoolClass.id
+            id: schoolClass.id,
           },
           data: {
             students: {
               connect: {
-                id: studentId
-              }
-            }
-          }
-        })
-      }
-      else {
-        await createNew()
+                id: studentId,
+              },
+            },
+          },
+        });
+      } else {
+        await createNew();
       }
     }
-
-
   } catch (err) {
-    console.log(err)
-
+    console.log(err);
   }
-
 }
-
 
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });

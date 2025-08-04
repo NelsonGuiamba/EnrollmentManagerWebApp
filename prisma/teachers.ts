@@ -50,4 +50,3 @@ export const teacherData = [
     image: "/images/female.jpg",
   },
 ];
-

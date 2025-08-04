@@ -1,18 +1,26 @@
-'use server'
+"use server";
 
-import { auth } from "@/auth";
-import { ActionResult } from "@/types";
-import { Role, EnrollmentStatus } from "../../generated/prisma";
-import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+
+import { Role, EnrollmentStatus } from "../../generated/prisma";
+
 import { getAuthUser } from "./authActions";
 
+import { ActionResult } from "@/types";
+import { prisma } from "@/lib/prisma";
 
-export async function updateEnrollment(isEnrollment: boolean, status: boolean, id: string): Promise<ActionResult<string>> {
+export async function updateEnrollment(
+  isEnrollment: boolean,
+  status: boolean,
+  id: string,
+): Promise<ActionResult<string>> {
   try {
-    const session = await getAuthUser(Role.EMPLOYEE)
+    const session = await getAuthUser(Role.EMPLOYEE);
 
-    const newStatus = status ? EnrollmentStatus.APPROVED : EnrollmentStatus.REJECTED
+    const newStatus = status
+      ? EnrollmentStatus.APPROVED
+      : EnrollmentStatus.REJECTED;
+
     if (isEnrollment)
       await prisma.student.update({
         where: { id },
@@ -20,15 +28,15 @@ export async function updateEnrollment(isEnrollment: boolean, status: boolean, i
           enrollment: {
             update: {
               status: newStatus,
-              processedById: session.user.id
-            }
-          }
-        }
-      })
+              processedById: session.user.id,
+            },
+          },
+        },
+      });
     else
       await prisma.student.update({
         where: {
-          id: id
+          id: id,
         },
         data: {
           enrollment: {
@@ -36,27 +44,27 @@ export async function updateEnrollment(isEnrollment: boolean, status: boolean, i
               appeal: {
                 update: {
                   status: newStatus,
-                  processedById: session.user.id
-                }
-              }
-            }
-          }
-        }
-      })
-    if (newStatus === 'APPROVED')
-      await addToSchoolClass(id)
-    revalidatePath('/employee')
+                  processedById: session.user.id,
+                },
+              },
+            },
+          },
+        },
+      });
+    if (newStatus === "APPROVED") await addToSchoolClass(id);
+    revalidatePath("/employee");
 
     return {
-      status: 'success',
-      data: `${newStatus.toLocaleLowerCase()} successfully`
-    }
+      status: "success",
+      data: `${newStatus.toLocaleLowerCase()} successfully`,
+    };
   } catch (err) {
-    console.log(err)
+    console.log(err);
+
     return {
-      status: 'error',
-      error: 'Something went wrong'
-    }
+      status: "error",
+      error: "Something went wrong",
+    };
   }
 }
 
@@ -64,46 +72,51 @@ async function addToSchoolClass(studentId: string) {
   try {
     const studentClass = await prisma.enrollment.findUnique({
       where: {
-        studentId: studentId
+        studentId: studentId,
       },
       select: {
-        class: true
-      }
-    })
+        class: true,
+      },
+    });
+
     if (!studentClass) {
-      console.log('Trying to add student without enrollment error')
-      return
+      console.log("Trying to add student without enrollment error");
+
+      return;
     }
 
     const schoolClass = await prisma.schoolClass.findFirst({
       where: {
-        class: studentClass.class
+        class: studentClass.class,
       },
       select: {
         id: true,
         _count: {
           select: {
-            students: true
-          }
-        }
-      }
-    })
+            students: true,
+          },
+        },
+      },
+    });
     const createNew = async () => {
       const professor = await prisma.user.findFirst({
-        where: { role: 'PROFESSOR' },
+        where: { role: "PROFESSOR" },
         select: {
           id: true,
           name: true,
           _count: { select: { SchoolClass: true } },
         },
         orderBy: {
-          SchoolClass: { _count: 'asc' },
+          SchoolClass: { _count: "asc" },
         },
       });
 
       if (!professor) {
-        console.log('PROFESSORs are not available please seed the professor data')
-        return
+        console.log(
+          "PROFESSORs are not available please seed the professor data",
+        );
+
+        return;
       }
 
       await prisma.schoolClass.create({
@@ -111,44 +124,39 @@ async function addToSchoolClass(studentId: string) {
           class: studentClass.class,
           students: {
             connect: {
-              id: studentId
-            }
+              id: studentId,
+            },
           },
           teacher: {
             connect: {
-              id: professor.id
-            }
-          }
-        }
-      })
-    }
+              id: professor.id,
+            },
+          },
+        },
+      });
+    };
 
     if (!schoolClass) {
-      await createNew()
+      await createNew();
     } else {
       if (schoolClass._count.students <= 10) {
         await prisma.schoolClass.update({
           where: {
-            id: schoolClass.id
+            id: schoolClass.id,
           },
           data: {
             students: {
               connect: {
-                id: studentId
-              }
-            }
-          }
-        })
-      }
-      else {
-        await createNew()
+                id: studentId,
+              },
+            },
+          },
+        });
+      } else {
+        await createNew();
       }
     }
-
-
   } catch (err) {
-    console.log(err)
-
+    console.log(err);
   }
-
 }

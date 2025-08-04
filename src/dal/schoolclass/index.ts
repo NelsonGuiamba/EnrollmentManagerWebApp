@@ -1,6 +1,6 @@
-import 'server-only'
+import "server-only";
 
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export async function getClassromByStudentId(id: string, parentId: string) {
   try {
@@ -9,18 +9,19 @@ export async function getClassromByStudentId(id: string, parentId: string) {
         students: {
           some: {
             id,
-            parentId
-          }
-        }
+            parentId,
+          },
+        },
       },
       include: {
         students: true,
-        teacher: true
-      }
-    })
+        teacher: true,
+      },
+    });
   } catch (err) {
-    console.log(err)
-    return null
+    console.log(err);
+
+    return null;
   }
 }
 
@@ -28,17 +29,16 @@ export async function getClassromByTeacherId(id: string) {
   try {
     return prisma.schoolClass.findFirst({
       where: {
-        teacherId: id
+        teacherId: id,
       },
       include: {
         students: true,
-        teacher: true
-      }
-    })
+        teacher: true,
+      },
+    });
   } catch (err) {
-    console.log(err)
-    return null
+    console.log(err);
 
+    return null;
   }
-
 }

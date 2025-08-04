@@ -14,5 +14,4 @@ export const employeeData = [
     email: "daniel.harris@employee.esjm.com",
     image: "/images/male.jpg",
   },
-
-]
+];

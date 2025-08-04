@@ -1,46 +1,49 @@
-'use client'
-import React, { ReactNode, startTransition } from 'react'
-import { Enrollment, EnrollmentStatus } from '../../../generated/prisma'
-import { capitalizeFirstLetter } from '@/lib/utils'
-import { addToast, Alert, Button } from '@heroui/react'
-import { StudentWithEnrollment } from '@/types'
-import { useState, useTransition } from 'react'
+"use client";
+import React, { ReactNode } from "react";
+import { addToast, Alert, Button } from "@heroui/react";
 import {
   useDisclosure,
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter
-} from '@heroui/modal'
-import { Input, Textarea } from '@heroui/input'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { AppealSchema, appealSchema } from '@/lib/schema/appealSchema'
-import { HiPaperAirplane } from 'react-icons/hi2'
-import { createAppeal } from '@/actions/memberActions'
-export const StudentDetailEnrollment = ({ student }: { student: StudentWithEnrollment }) => {
+  ModalFooter,
+} from "@heroui/modal";
+import { Textarea } from "@heroui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { HiPaperAirplane } from "react-icons/hi2";
 
+import { EnrollmentStatus } from "../../../generated/prisma";
+
+import { AppealSchema, appealSchema } from "@/lib/schema/appealSchema";
+import { StudentWithEnrollment } from "@/types";
+import { capitalizeFirstLetter } from "@/lib/utils";
+import { createAppeal } from "@/actions/memberActions";
+export const StudentDetailEnrollment = ({
+  student,
+}: {
+  student: StudentWithEnrollment;
+}) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  const status = student.enrollment?.status as EnrollmentStatus
+  const status = student.enrollment?.status as EnrollmentStatus;
   const getColorByStatus = (status: EnrollmentStatus) => {
     switch (status) {
-      case 'REJECTED':
-        return 'danger'
-      case 'APPROVED':
-        return 'success'
+      case "REJECTED":
+        return "danger";
+      case "APPROVED":
+        return "success";
       default:
-        return 'default'
+        return "default";
     }
-  }
-  let color = ''
-
+  };
+  let color = "";
 
   const onSubmit = async (data: AppealSchema) => {
-    const result = await createAppeal(data, student.enrollment?.id as string)
+    const result = await createAppeal(data, student.enrollment?.id as string);
 
-    if (result.status === 'success') {
+    if (result.status === "success") {
       addToast({
         title: "Appeal created successfully",
         description: "Please wait for response",
@@ -48,90 +51,107 @@ export const StudentDetailEnrollment = ({ student }: { student: StudentWithEnrol
         color: "success",
         timeout: 3000,
         shouldShowTimeoutProgress: true,
-      })
+      });
 
-      onClose()
-
-    }
-    else {
-      addToast(({
+      onClose();
+    } else {
+      addToast({
         title: result.error as string,
-        variant: 'flat',
-        color: 'danger',
+        variant: "flat",
+        color: "danger",
         timeout: 3000,
-        shouldShowTimeoutProgress: true
-      }))
-
+        shouldShowTimeoutProgress: true,
+      });
     }
-  }
-  const { register, reset, handleSubmit, setError, setFocus,
-    formState: { isSubmitting, isValid, errors } } = useForm<AppealSchema>({
-      resolver: zodResolver(appealSchema)
-    })
+  };
+  const {
+    register,
+    reset,
+    handleSubmit,
+    setError,
+    setFocus,
+    formState: { isSubmitting, isValid, errors },
+  } = useForm<AppealSchema>({
+    resolver: zodResolver(appealSchema),
+  });
 
+  let renderElement: ReactNode;
 
-  let renderElement: ReactNode
-  if (status === 'REJECTED') {
+  if (status === "REJECTED") {
     if (!student.enrollment?.appeal)
-      renderElement = <>
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement='center'>
-          <ModalContent>
-            <ModalHeader>
-              Appeal Form
-            </ModalHeader>
-            <ModalBody>
-              <h1 className='text-xl text-center'>Reason for Enrollment rejection</h1>
-              <p>{student.enrollment?.reason}</p>
-            </ModalBody>
-            <ModalFooter>
-              <form onSubmit={handleSubmit(onSubmit)} className='w-full ' autoComplete='off'>
-                <div className='flex items-center gap-2'>
-                  <Textarea
-                    fullWidth
-                    placeholder='Type a message'
-                    variant='faded'
-                    {...register('text')}
-                    isInvalid={!!errors.text}
-                    errorMessage={errors.text?.message}
-                    autoComplete='nope'
-                    aria-autocomplete='none'
-                  />
-                  <Button
-                    type='submit'
-                    isIconOnly
-                    color='secondary'
-                    radius='full'
-                    isLoading={isSubmitting}
-                    isDisabled={isSubmitting}
-                  >
-                    <HiPaperAirplane size={18} />
-                  </Button>
-
-                </div>
-              </form>
-
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-        <Button color='secondary' onPress={onOpen} >Appeal decision</Button>
-      </>
+      renderElement = (
+        <>
+          <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange}>
+            <ModalContent>
+              <ModalHeader>Appeal Form</ModalHeader>
+              <ModalBody>
+                <h1 className="text-xl text-center">
+                  Reason for Enrollment rejection
+                </h1>
+                <p>{student.enrollment?.reason}</p>
+              </ModalBody>
+              <ModalFooter>
+                <form
+                  autoComplete="off"
+                  className="w-full "
+                  onSubmit={handleSubmit(onSubmit)}
+                >
+                  <div className="flex items-center gap-2">
+                    <Textarea
+                      fullWidth
+                      placeholder="Type a message"
+                      variant="faded"
+                      {...register("text")}
+                      aria-autocomplete="none"
+                      autoComplete="nope"
+                      errorMessage={errors.text?.message}
+                      isInvalid={!!errors.text}
+                    />
+                    <Button
+                      isIconOnly
+                      color="secondary"
+                      isDisabled={isSubmitting}
+                      isLoading={isSubmitting}
+                      radius="full"
+                      type="submit"
+                    >
+                      <HiPaperAirplane size={18} />
+                    </Button>
+                  </div>
+                </form>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+          <Button color="secondary" onPress={onOpen}>
+            Appeal decision
+          </Button>
+        </>
+      );
     else {
-      renderElement = <Alert
-        className='max-w-fit px-2 py-2 sm:px-3 sm:py-2'
-        variant='flat'
-        color={getColorByStatus(student.enrollment.appeal.status)}
-      > Appeal status: {capitalizeFirstLetter(student.enrollment.appeal.status)}</Alert >
-
+      renderElement = (
+        <Alert
+          className="max-w-fit px-2 py-2 sm:px-3 sm:py-2"
+          color={getColorByStatus(student.enrollment.appeal.status)}
+          variant="flat"
+        >
+          {" "}
+          Appeal status:{" "}
+          {capitalizeFirstLetter(student.enrollment.appeal.status)}
+        </Alert>
+      );
     }
   }
+
   return (
-    <div className='flex flex-row justify-between items-center gap-8'>
+    <div className="flex flex-row justify-between items-center gap-8">
       <Alert
-        className='max-w-fit px-2 py-2 sm:px-3 sm:py-2'
-        variant='flat'
+        className="max-w-fit px-2 py-2 sm:px-3 sm:py-2"
         color={getColorByStatus(status)}
-      >Enrollment status: {capitalizeFirstLetter(status)}</Alert>
+        variant="flat"
+      >
+        Enrollment status: {capitalizeFirstLetter(status)}
+      </Alert>
       {renderElement}
     </div>
-  )
-}
+  );
+};
