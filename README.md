@@ -38,11 +38,6 @@ This application aims to streamline the enrollment process in a primary school, 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
----
-
-## 🚀 Live Demo
-
-You can test the app here: ***INSERT\_URL\_HERE*** (link to be updated)
 
 ### 👥 Test Credentials
 
