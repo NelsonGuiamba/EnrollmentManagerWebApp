@@ -22,10 +22,12 @@ export default async function ProfessorHomePage() {
     );
 
   return (
-    <Classroom
-      classs={data.class}
-      students={data.students}
-      teacher={data.teacher}
-    />
+    <div className="px-6">
+      <Classroom
+        classs={data.class}
+        students={data.students}
+        teacher={data.teacher}
+      />
+    </div>
   );
 }

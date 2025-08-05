@@ -26,7 +26,7 @@ export default {
           return user;
         }
 
-        return null
+        return null;
       },
     }),
   ],

@@ -42,7 +42,7 @@ export default async function Home() {
       //  student.enrollment?.appeal?.status === EnrollmentStatus.PENDING
       // )
       return (
-        <div className="flex flex-col  h-full gap-4">
+        <div className="flex flex-col  h-full gap-4 px-6">
           <section>
             <h1 className="text-2xl py-3">Overview</h1>
             <StudentsSummary

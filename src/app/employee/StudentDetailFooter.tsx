@@ -22,6 +22,7 @@ export default function StudentDetailFooter({
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [modalTitle, setTitle] = useState("");
   const [isPending, startTransition] = useTransition();
+
   if (
     student.enrollment?.appeal?.status !== "PENDING" &&
     student.enrollment?.status !== "PENDING"

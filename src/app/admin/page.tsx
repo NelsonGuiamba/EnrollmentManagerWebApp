@@ -193,7 +193,7 @@ export default async function AdminHomePage() {
   }
 
   return (
-    <div className="flex flex-col gap-8 w-full h-full pb-11">
+    <div className="flex flex-col gap-8 w-full h-full pb-11 px-4">
       <section>
         <h1 className="text-2xl py-3">Overview</h1>
         <StudentsSummary
