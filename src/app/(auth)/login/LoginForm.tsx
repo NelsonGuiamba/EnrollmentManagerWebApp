@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@heroui/button";
 import { Card, CardHeader, CardBody, addToast } from "@heroui/react";
-import { Input } from "@heroui/react";
+import { Input } from "@heroui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";

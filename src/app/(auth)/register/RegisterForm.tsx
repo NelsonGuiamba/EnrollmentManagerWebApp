@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@heroui/button";
 import { Card, CardHeader, CardBody, addToast } from "@heroui/react";
-import { Input } from "@heroui/react";
+import { Input } from "@heroui/input";
 import React from "react";
 import { GiPadlock } from "react-icons/gi";
 import { useForm } from "react-hook-form";
