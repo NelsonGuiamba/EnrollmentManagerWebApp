@@ -23,6 +23,18 @@ export default async function Home() {
       const approved: Set<string> = new Set();
       const pedding: Set<string> = new Set();
 
+      students.sort((a, b) => {
+        const aPending =
+          a.enrollment?.status === EnrollmentStatus.PENDING ||
+          a.enrollment?.appeal?.status === EnrollmentStatus.PENDING;
+
+        const bPending =
+          b.enrollment?.status === EnrollmentStatus.PENDING ||
+          b.enrollment?.appeal?.status === EnrollmentStatus.PENDING;
+
+        return Number(bPending) - Number(aPending);
+      });
+
       for (let student of students) {
         if (
           student.enrollment?.status === EnrollmentStatus.APPROVED ||
