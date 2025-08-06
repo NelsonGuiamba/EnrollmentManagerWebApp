@@ -10,7 +10,7 @@ export const enrollSchema = z.object({
   dateOfBirth: z.date(),
   class: z.number(),
   shift: z.enum(Shift),
-  certificate: z.string(),
+  certificate: z.string().optional(),
   nationalIdCard: z.string(),
 });
 

@@ -10,6 +10,7 @@ import { enrollSchema, EnrollSchema } from "@/lib/schema/enrollSchema";
 import { ActionResult, StudentWithEnrollment } from "@/types";
 import { prisma } from "@/lib/prisma";
 import { appealSchema, AppealSchema } from "@/lib/schema/appealSchema";
+import { getLocalTimeZone, today } from "@internationalized/date";
 
 export async function deleteImage(publicId: string) {
   return cloudinary.v2.uploader.destroy(publicId);
@@ -32,6 +33,12 @@ export async function createStudent(
         status: "error",
         error: validated.error.message,
       };
+
+    if (validated.data.dateOfBirth.getFullYear() > today(getLocalTimeZone()).subtract({ years: 6 }).year)
+      return {
+        status: 'error',
+        error: 'Invalid date of birth childrens must be at least 6 years old'
+      }
 
     await prisma.student.create({
       data: {

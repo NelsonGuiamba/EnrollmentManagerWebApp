@@ -40,6 +40,7 @@ export default function EnrollForm() {
     nationalId: true,
   });
   const [wasSubmitted, setWasSubmitted] = useState(false);
+  const [canISubmit, setCanISubmit] = useState(false)
   const [formData, setFormData] = useState<Partial<EnrollSchema>>({
     sex: "MASCULINE",
     shift: undefined,
@@ -56,6 +57,7 @@ export default function EnrollForm() {
         ...prev,
         nationalIdCard: public_id,
       }));
+      validate()
     }
   }
   function certificateChange(result: CloudinaryUploadWidgetResults) {
@@ -69,6 +71,7 @@ export default function EnrollForm() {
         ...prev,
         certificate: public_id,
       }));
+      validate()
     }
   }
 
@@ -83,7 +86,11 @@ export default function EnrollForm() {
       nationalId: formData.nationalIdCard == undefined,
     });
 
-    return Object.values(errors).some((value) => value === false);
+    console.log(formData)
+
+
+    setCanISubmit(!Object.values(errors).some((value) => value === false));
+    return canISubmit
   }
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -96,7 +103,7 @@ export default function EnrollForm() {
       } else {
         console.log(result.error);
         addToast({
-          title: "Something went wrong please try again",
+          title: result.error as string,
           shouldShowTimeoutProgress: true,
           color: "danger",
           timeout: 3000,
@@ -148,6 +155,7 @@ export default function EnrollForm() {
                         ...prev,
                         dateOfBirth: dateValueToDate(e as CalendarDate),
                       }));
+                      validate()
                     }}
                   />
                 </div>
@@ -160,6 +168,7 @@ export default function EnrollForm() {
                       ...prev,
                       sex: e as Sex,
                     }));
+                    validate()
                   }}
                 >
                   <Radio value={Sex.MASCULINE}>Masculine</Radio>
@@ -197,6 +206,7 @@ export default function EnrollForm() {
                           ...prev,
                           shift: keys.anchorKey as Shift,
                         }));
+                        validate()
                       }
                     }}
                   >
@@ -236,34 +246,34 @@ export default function EnrollForm() {
                     <div className="flex-1">
                       {(formData.class != 1 ||
                         formData.class === undefined) && (
-                        <>
-                          <CldUploadButton
-                            className="flex  items-center gap-2 bg-secondary-500 text-white py-2 px-4 rounded-lg hover:bg-secondary/70"
-                            options={{ maxFiles: 1 }}
-                            signatureEndpoint={"/api/sign-image"}
-                            uploadPreset="nm-testing"
-                            onSuccess={certificateChange}
-                          >
-                            <IoImage size={24} />
-                            {formData.certificate === undefined
-                              ? "Upload "
-                              : "Change "}
-                            Certificate
-                          </CldUploadButton>
+                          <>
+                            <CldUploadButton
+                              className="flex  items-center gap-2 bg-secondary-500 text-white py-2 px-4 rounded-lg hover:bg-secondary/70"
+                              options={{ maxFiles: 1 }}
+                              signatureEndpoint={"/api/sign-image"}
+                              uploadPreset="nm-testing"
+                              onSuccess={certificateChange}
+                            >
+                              <IoImage size={24} />
+                              {formData.certificate === undefined
+                                ? "Upload "
+                                : "Change "}
+                              Certificate
+                            </CldUploadButton>
 
-                          {wasSubmitted && errors.certificate && (
-                            <p className="text-sm text-red-500">
-                              A certificate is required
-                            </p>
-                          )}
-                        </>
-                      )}
+                            {wasSubmitted && errors.certificate && (
+                              <p className="text-sm text-red-500">
+                                A certificate is required
+                              </p>
+                            )}
+                          </>
+                        )}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <Button className="mt-4" color="secondary" type="submit">
+              <Button className="mt-4" color="secondary" type="submit" isDisabled={!canISubmit}>
                 Submit
               </Button>
             </div>

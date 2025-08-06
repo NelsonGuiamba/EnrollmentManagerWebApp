@@ -59,8 +59,8 @@ model Enrollment {
   id             String           @id @default(cuid())
   class          Int
   shift          Shift
-  certificate    String
-  nationalIdCard String?
+  certificate    String?
+  nationalIdCard String
   studentId      String           @unique
   student        Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
   status         EnrollmentStatus @default(PENDING)

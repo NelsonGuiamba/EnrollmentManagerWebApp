@@ -30,6 +30,7 @@ export default function StudentDetail({
   const [modalType, setModalType] = useState<"certificate" | "idcard">(
     "idcard",
   );
+  const haveCertificate = student.enrollment?.class !== 1
 
   const openWithCertificate = () => {
     setModalType("certificate");
@@ -65,9 +66,11 @@ export default function StudentDetail({
                 : "Afternoon"}
             </p>
             <div className="flex flex-row gap-3">
-              <Button color="secondary" onPress={openWithCertificate}>
-                See certificate
-              </Button>
+              {haveCertificate &&
+                <Button color="secondary" onPress={openWithCertificate}>
+                  See certificate
+                </Button>
+              }
               <Button color="secondary" onPress={openWithIdCard}>
                 See national id Card
               </Button>
